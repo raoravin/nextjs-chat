@@ -1,5 +1,6 @@
 // src/context/AuthProvider.js
 "use client";
+
 import { createContext, useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
