@@ -56,9 +56,10 @@ const useAuth = () => {
    */
   const loginWithEmailPassword = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password); // Sign in with email and password
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      console.error("Error during login:", error.message); // Error handling
+      console.error('Error during login:', error.message);
+      throw error; // Propagate error for handling in component
     }
   };
 

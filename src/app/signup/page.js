@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation'; // For navigation after successful sign-up
 import useAuth from '../../hooks/useAuth'; // Custom authentication hook for sign-up
 import AuthForm from '../../components/AuthForm'; // Import the reusable AuthForm component
+import Navbar from '@/components/Navbar';
 
 const SignUp = () => {
   // Destructure authentication functions from the custom hook
@@ -55,7 +56,8 @@ const SignUp = () => {
   };
 
   return (
-    // Flex container for centering the form on the screen
+    <>
+     <Navbar /> {/* Add the Navbar to the top of the page */}
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
       {/* AuthForm is the reusable form component */}
       <AuthForm
@@ -67,6 +69,7 @@ const SignUp = () => {
         signInWithGoogle={signInWithGoogle} // Pass the Google sign-in function as a prop
       />
     </div>
+    </>
   );
 };
 

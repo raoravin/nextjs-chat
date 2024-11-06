@@ -1,66 +1,86 @@
-// app/signin/page.js
+// src/app/signin/page.js
 
-"use client"
+"use client";
 
-import { useState } from 'react'; // Import useState to manage state in the component
-import { useRouter } from 'next/router'; // Import useRouter for navigation after successful sign-in
-import useAuth from '../../hooks/useAuth'; // Import custom authentication hook to manage sign-in
-import AuthForm from '../../components/AuthForm'; // Import the reusable AuthForm component
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useAuth from '../../hooks/useAuth'; // Custom hook to handle authentication
+import AuthForm from '../../components/AuthForm'; // Reusable form component
 
 const SignIn = () => {
-  // Destructure sign-in functions from the custom authentication hook
-  const { signInWithEmailPassword, signInWithGoogle } = useAuth(); 
-
-  // State to store error messages and loading state
+  const { loginWithEmailPassword, signInWithGoogle } = useAuth(); // Use the custom hook for login and Google login
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  // Router hook for navigating after successful sign-in
-  const router = useRouter(); 
-
-  // Function to handle sign-in with email and password
+  // Handle form submission
   const handleSignIn = async (email, password) => {
-    setError(''); // Clear any previous error messages
-    setLoading(true); // Set loading state to true during the API request
-
-    // Validate the email format using a regular expression
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email.'); // Show error message for invalid email
-      setLoading(false); // Reset loading state
-      return; // Stop further execution
-    }
+    setError('');
+    setLoading(true);
 
     try {
-      // Attempt to sign in the user with email and password
-      await signInWithEmailPassword(email, password);
-      alert('Sign in successful!'); // Show a success alert
-      setLoading(false); // Reset loading state
+      // Attempt to log in with Firebase Authentication
+      await loginWithEmailPassword(email, password);
+      setLoading(false);
 
-      // Redirect the user to the dashboard after successful sign-in
-      router.push('/dashboard'); 
+      // Redirect to dashboard if successful
+      router.push('/dashboard');
     } catch (error) {
-      // Log the error and set an error message to be displayed
-      console.error('Error during sign-in:', error.message);
-      setError('Error signing in. Please try again.'); // Set user-friendly error message
-      setLoading(false); // Reset loading state
+      setError('Invalid email or password. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  // Handle Google Sign-In
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setLoading(true);
+
+    try {
+      await signInWithGoogle();
+      setLoading(false);
+      router.push('/dashboard'); // Redirect to dashboard upon success
+    } catch (error) {
+      setError('Google sign-in failed. Please try again.');
+      setLoading(false);
     }
   };
 
   return (
-    // Flex container to center the form in the middle of the screen
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
-      {/* Reusable AuthForm component to handle sign-in form */}
-      <AuthForm
-        title="Sign In" // Title for the sign-in form
-        onSubmit={handleSignIn} // Pass the handleSignIn function to the AuthForm's onSubmit prop
-        errorMessage={error} // Pass error message to the form if any
-        buttonText={loading ? 'Signing In...' : 'Sign In'} // Show loading text when signing in, otherwise 'Sign In'
-        loadingText={loading ? 'Signing In...' : 'Sign In'} // Same as buttonText, used to show during loading
-        signInWithGoogle={signInWithGoogle} // Pass the Google sign-in function as a prop
-      />
+      <div className="w-full max-w-md">
+        <AuthForm
+          title="Sign In"
+          onSubmit={handleSignIn}
+          errorMessage={error}
+          buttonText={loading ? 'Signing In...' : 'Sign In'}
+          loadingText="Signing In..."
+        />
+
+        {/* Google Sign-In Button */}
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full bg-red-500 text-white p-3 rounded-md mt-4 flex items-center justify-center"
+        >
+          <span className="mr-2">Sign in with Google</span>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo" className="w-5 h-5" />
+        </button>
+
+        {/* Navigate to the sign-up page */}
+        <div className="mt-4 text-center">
+          <span className="text-sm text-gray-700">
+            Don't have an account?{' '}
+            <button
+              onClick={() => router.push('/signup')}
+              className="text-blue-500 hover:underline"
+            >
+              Sign Up
+            </button>
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default SignIn; // Export SignIn component for use in the app
+export default SignIn;
