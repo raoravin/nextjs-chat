@@ -4,8 +4,8 @@
 
 import { useState } from 'react'; // Import useState to manage state in the component
 import { useRouter } from 'next/router'; // Import useRouter for navigation after successful sign-in
-import useAuth from '../hooks/useAuth'; // Import custom authentication hook to manage sign-in
-import AuthForm from '../components/AuthForm'; // Import the reusable AuthForm component
+import useAuth from '../../hooks/useAuth'; // Import custom authentication hook to manage sign-in
+import AuthForm from '../../components/AuthForm'; // Import the reusable AuthForm component
 
 const SignIn = () => {
   // Destructure sign-in functions from the custom authentication hook
