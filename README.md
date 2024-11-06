@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Multi-Language Real-Time Chat Application with Chrome’s Built-in AI
 
-## Getting Started
+This is a real-time, multilingual chat application built with **Next.js** and **Firebase**, using **Google Chrome’s built-in AI APIs** to provide dynamic, cross-language messaging powered by **Gemini Nano**. The app automatically translates messages to the recipient’s preferred language, enhancing global communication. This project is part of the **Google Chrome Built-in AI Challenge**.
 
-First, run the development server:
+## Table of Contents
+- [Features](#features)
+- [Project Demo](#project-demo)
+- [Tech Stack](#tech-stack)
+- [Folder Structure](#folder-structure)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Google Chrome Built-in AI APIs](#google-chrome-built-in-ai-apis)
+- [Contributing](#contributing)
+- [License](#license)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Real-Time Messaging**: Instant communication using Firebase Firestore.
+- **Multi-Language Translation**: Messages automatically translate into the recipient’s preferred language using Chrome’s Translation API with Gemini Nano.
+- **User Authentication**: Google authentication to personalize chat sessions.
+- **Contextual Prompt API**: Suggested responses based on chat context.
+- **Summarization API**: View summaries of conversations for a quick overview.
+- **Rewrite API**: Alternative phrasing suggestions to clarify messages.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project Demo
 
-To learn more about Next.js, take a look at the following resources:
+- **[Video Demonstration](#)**: A 3-minute YouTube demo of the application in action.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- **Frontend**: Next.js (App Router)
+- **Backend**: Firebase Firestore (real-time data)
+- **Authentication**: Firebase Authentication with Google Sign-In
+- **AI APIs**: Google Chrome’s Gemini Nano model (Translation API, Prompt API, Summarization API, Rewrite API)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Folder Structure
+
+```plaintext
+multi-lang-chat-app/
+├── public/
+│   └── favicon.ico                  # App favicon
+├── src/
+│   ├── app/
+│   │   ├── layout.js                # Layout file for shared components
+│   │   ├── globals.css              # Global styles
+│   │   ├── page.js                  # Home page with Google Sign-In
+│   │   └── chat/
+│   │       ├── page.js              # Main chat page
+│   │       └── ChatBox.js           # Main chat component handling translation
+│   ├── components/
+│   │   ├── Message.js               # Component for displaying each message
+│   │   ├── MessageInput.js          # Input field for sending messages
+│   │   └── Navbar.js                # Navigation bar with sign-in/sign-out
+│   ├── contexts/
+│   │   └── AuthContext.js           # Authentication state management
+│   ├── firebase/
+│   │   └── firebase.js              # Firebase initialization
+│   ├── hooks/
+│   │   ├── useAuth.js               # Custom hook for auth state
+│   │   └── useTranslate.js          # Custom hook for translation with Translation API
+└── package.json                     # Project dependencies
