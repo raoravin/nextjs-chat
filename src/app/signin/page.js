@@ -1,9 +1,8 @@
-// src/app/signin/page.js
-
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Firebase imports
 import useAuth from '../../hooks/useAuth'; // Custom hook to handle authentication
 import AuthForm from '../../components/AuthForm'; // Reusable form component
 
@@ -11,20 +10,45 @@ const SignIn = () => {
   const { loginWithEmailPassword, signInWithGoogle } = useAuth(); // Use the custom hook for login and Google login
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isAuthChecked, setIsAuthChecked] = useState(false); // To track if authentication is checked
   const router = useRouter();
 
+  // Firebase authentication setup
+  const auth = getAuth();
+
+  // Check user authentication status when component mounts
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // If user is authenticated, redirect to dashboard
+        router.push('/dashboard');
+      }
+      setIsAuthChecked(true); // Set to true once auth check is done
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
+
+  // Don't render anything until authentication check is completed
+  if (!isAuthChecked) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+        <p>Loading...</p> {/* Show a loading message */}
+      </div>
+    );
+  }
+
   // Handle form submission
-  const handleSignIn = async (email, password) => {
+  const onSubmit = async (email, password) => {
     setError('');
     setLoading(true);
 
     try {
-      // Attempt to log in with Firebase Authentication
-      await loginWithEmailPassword(email, password);
-      setLoading(false);
-
-      // Redirect to dashboard if successful
-      router.push('/dashboard');
+      const userCredential = await loginWithEmailPassword(email, password);
+      const user = userCredential?.user;
+      if (user) {
+        router.push('/dashboard');
+      }
     } catch (error) {
       setError('Invalid email or password. Please try again.');
       setLoading(false);
@@ -37,9 +61,11 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      await signInWithGoogle();
-      setLoading(false);
-      router.push('/dashboard'); // Redirect to dashboard upon success
+      const userCredential = await signInWithGoogle();
+      const user = userCredential.user;
+      if (user) {
+        router.push('/dashboard');
+      }
     } catch (error) {
       setError('Google sign-in failed. Please try again.');
       setLoading(false);
@@ -51,10 +77,10 @@ const SignIn = () => {
       <div className="w-full max-w-md">
         <AuthForm
           title="Sign In"
-          onSubmit={handleSignIn}
+          onSubmit={onSubmit}
           errorMessage={error}
-          buttonText={loading ? 'Signing In...' : 'Sign In'}
-          loadingText="Signing In..."
+          buttonText="Sign In"
+          loadingText={loading ? 'Signing In...' : ''}
         />
 
         {/* Google Sign-In Button */}
